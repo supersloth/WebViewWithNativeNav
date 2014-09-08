@@ -45,6 +45,7 @@ public class MyActivity extends Activity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment.setCallback(this);
         mTitle = getTitle();
 
         // Set up the drawer.
@@ -53,6 +54,12 @@ public class MyActivity extends Activity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         mPageURL = "http://beta.html5test.com/";
+        loadWebViewContent();
+    }
+
+    @Override
+    public void openUrl( String urlToOpen){
+        mPageURL = urlToOpen;
         loadWebViewContent();
     }
 

@@ -97,8 +97,11 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
+                Toast.makeText(getActivity(), "test"+position, Toast.LENGTH_LONG).show();
+                mCallbacks.openUrl("http://www.digg.com");
             }
         });
+        //probably unnecesary at the moment since this is being set in the fragment_navigation_drawer.xml
         mDrawerListViewItems = getResources().getStringArray(R.array.drawermenuitems);
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
@@ -277,5 +280,13 @@ public class NavigationDrawerFragment extends Fragment {
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(int position);
+
+        public void openUrl(String urlToOpen);
     }
+
+    public void setCallback(NavigationDrawerCallbacks callback){
+        mCallbacks = callback;
+    }
+
+
 }
