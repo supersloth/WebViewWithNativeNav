@@ -20,6 +20,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MyActivity extends Activity
@@ -72,6 +73,18 @@ public class MyActivity extends Activity
 
         //mPageURL = "http://beta.html5test.com/";
         mWebView.loadUrl(mPageURL);
+
+
+
+        try {
+            String URL = "http://wwwtest.onlineregister.com/~jrivera/android/xml/stack.xml";
+            //new DownloadXmlTask().execute(URL);
+            new XmlNetwork().execute(URL);
+            Toast.makeText(this, "xmlNetwork Worked!", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "xmlNetwork Failed!", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override

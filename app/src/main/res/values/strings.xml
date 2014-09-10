@@ -31,4 +31,38 @@
         <item>Section 3T</item>
     </string-array>
 
+    <string-array name="draweritems">
+        <item>
+            <link>http://www.google.com</link>
+            <title>Google</title>
+            <icon>soon</icon>
+        </item>
+        <item>
+            <link>http://www.deadspin.com</link>
+            <title>Deadspin</title>
+            <icon>soon</icon>
+        </item>
+        <item>
+            <link>http://www.gawker.com</link>
+            <title>Gawker</title>
+            <icon>soon</icon>
+        </item>
+    </string-array>
+
+    <array name="menu_items">
+        <item>@array/menu_item_dashboard</item>
+        <item>@array/menu_item_index</item>
+    </array>
+
+    <array name="menu_item_dashboard">
+
+        <item>Dashboard</item>
+        <item>http://www.google.com</item>
+    </array>
+    <array name="menu_item_index">
+
+        <item>Title</item>
+        <item>http://www.yahoo.com</item>
+    </array>
+
 </resources>

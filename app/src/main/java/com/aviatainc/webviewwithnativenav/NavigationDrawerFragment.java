@@ -4,6 +4,7 @@ package com.aviatainc.webviewwithnativenav;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.res.TypedArray;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,6 +22,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -98,18 +101,58 @@ public class NavigationDrawerFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
                 Toast.makeText(getActivity(), "test"+position, Toast.LENGTH_LONG).show();
-                mCallbacks.openUrl("http://www.digg.com");
+                mCallbacks.openUrl(getLink(position));
             }
         });
-        //probably unnecesary at the moment since this is being set in the fragment_navigation_drawer.xml
-        mDrawerListViewItems = getResources().getStringArray(R.array.drawermenuitems);
+
+
+        ArrayList<String> menuNames = new ArrayList<String>();
+        TypedArray menuResources = getResources().obtainTypedArray(R.array.menu_items);
+
+        TypedArray itemDef;
+        for (int i = 0; i < menuResources.length(); i++) {
+            int resId = menuResources.getResourceId(i, -1);
+            if (resId < 0) {
+                continue;
+            }
+            itemDef = getResources().obtainTypedArray(resId);
+            menuNames.add(itemDef.getString(0));
+        }
+
+
+        //mDrawerListViewItems = getResources().getStringArray(R.array.drawermenuitems);
+        //mDrawerListView.setAdapter(new ArrayAdapter<String>(
+        //        getActionBar().getThemedContext(),
+        //        android.R.layout.simple_list_item_activated_1,
+        //        android.R.id.text1,
+        //        mDrawerListViewItems));
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                mDrawerListViewItems));
+                menuNames));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
+    }
+
+
+    public String getLink(int number) {
+        //return getResources().getStringArray(R.array.drawerlinkitems)[number];
+
+        ArrayList<String> menuLinks = new ArrayList<String>();
+        TypedArray menuResources = getResources().obtainTypedArray(R.array.menu_items);
+
+        TypedArray itemDef;
+        for (int i = 0; i < menuResources.length(); i++) {
+            int resId = menuResources.getResourceId(i, -1);
+            if (resId < 0) {
+                continue;
+            }
+            itemDef = getResources().obtainTypedArray(resId);
+            menuLinks.add(itemDef.getString(1));
+        }
+
+        return menuLinks.get(number);
     }
 
     public boolean isDrawerOpen() {
