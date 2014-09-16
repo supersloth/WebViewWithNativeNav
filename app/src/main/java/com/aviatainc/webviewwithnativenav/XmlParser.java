@@ -155,4 +155,95 @@ public class XmlParser {
             }
         }
     }
+
+
+
+    //changing structure for menu xml instead of the stackoverflow feed
+
+
+
+    public static class PEMenuItem {
+        public final String title;
+        public final String link;
+
+        private PEMenuItem(String title, String link) {
+            this.title = title;
+            this.link = link;
+        }
+    }
+
+    private PEMenuItem readMenuItem(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "menuitem");
+        String title = null;
+        String link = null;
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            if (name.equals("title")) {
+                title = readMenuTitle(parser);
+            } else if (name.equals("link")) {
+                link = readMenuLink(parser);
+            } else {
+                skip(parser);
+            }
+        }
+        return new PEMenuItem(title, link);
+    }
+
+    private String readMenuTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "title");
+        String title = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "title");
+        return title;
+    }
+
+    // Processes link tags in the feed.
+    private String readMenuLink(XmlPullParser parser) throws IOException, XmlPullParserException {
+        String link = "";
+        parser.require(XmlPullParser.START_TAG, ns, "link");
+        String tag = parser.getName();
+        String relType = parser.getAttributeValue(null, "rel");
+        if (tag.equals("link")) {
+             //if (relType.equals("alternate")) {
+                link = parser.getAttributeValue(null, "href");
+                parser.nextTag();
+            //}
+        }
+        parser.require(XmlPullParser.END_TAG, ns, "link");
+        return link;
+    }
+
+    private List<PEMenuItem> readMenuFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List<PEMenuItem> menuItems = new ArrayList<PEMenuItem>();
+
+        parser.require(XmlPullParser.START_TAG, ns, "feed");
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            // Starts by looking for the entry tag
+            if (name.equals("menuitem")) {
+                menuItems.add(readMenuItem(parser));
+            } else {
+                skip(parser);
+            }
+        }
+        return menuItems;
+    }
+
+    public List<PEMenuItem> parseMenu(InputStream in) throws XmlPullParserException, IOException {
+        try {
+            XmlPullParser parser = Xml.newPullParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(in, null);
+            parser.nextTag();
+            return readMenuFeed(parser);
+        } finally {
+            in.close();
+        }
+    }
+
 }

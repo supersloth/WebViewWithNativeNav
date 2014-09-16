@@ -25,6 +25,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 
 import com.aviatainc.webviewwithnativenav.R;
 import com.aviatainc.webviewwithnativenav.XmlParser.Entry;
+import com.aviatainc.webviewwithnativenav.XmlParser.PEMenuItem;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -61,11 +63,14 @@ import java.util.List;
  * o Monitors preferences and the device's network connection to determine whether
  *   to refresh the WebView content.
  */
-public class XmlNetwork extends AsyncTask<String, Void, String> {
+
+//AsyncTask<Params, Progress, Result>
+//meaning in this instance <String used by doInBackground(), Void since not currently using Progress function, List<PEMenuItem> being returned because objects!>
+public class XmlNetwork extends AsyncTask< String, Void, List<PEMenuItem> > {
     public static final String WIFI = "Wi-Fi";
     public static final String ANY = "Any";
     private static final String URL =
-            "http://wwwtest.onlineregister.com/~jrivera/android/xml/stack.xml";
+            "http://wwwtest.onlineregister.com/~jrivera/android/xml/menu.xml";
 
     // Whether there is a Wi-Fi connection.
     private static boolean wifiConnected = false;
@@ -82,25 +87,34 @@ public class XmlNetwork extends AsyncTask<String, Void, String> {
 
 
     @Override
-    protected String doInBackground(String... urls) {
+    public List<PEMenuItem> doInBackground(String... urls) {
+    //protected String doInBackground(String... urls) {
         try {
-            return loadXmlFromNetwork(urls[0]);
+            return loadMenuXmlFromNetwork(urls[0]);
         } catch (IOException e) {
             //return getResources().getString(R.string.connection_error);
-            return "connection error";
+            //return "connection error";
+            return null;
         } catch (XmlPullParserException e) {
+            //Log.i("Error!", "Error: " + e);
+            //e.printStackTrace();
             //return getResources().getString(R.string.xml_error);
-            String temp = e.getMessage();
-            return "xml error";
+            //String temp = e.getMessage();
+            //return "xml error";
+            return null;
         }
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(List<PEMenuItem> result) {
+    //protected void onPostExecute(String result) {
         //setContentView(R.layout.main);
         // Displays the HTML string in the UI via a WebView
         //WebView myWebView = (WebView) findViewById(R.id.webview);
         //myWebView.loadData(result, "text/html", null);
+        //String temp = result;
+        List<PEMenuItem> temp = result;
+
     }
 
     // Uploads XML from stackoverflow.com, parses it, and combines it with
@@ -150,8 +164,11 @@ public class XmlNetwork extends AsyncTask<String, Void, String> {
             //    htmlString.append(entry.summary);
             //}
         }
+
         return htmlString.toString();
     }
+
+
 
     // Given a string representation of a URL, sets up a connection and gets
     // an input stream.
@@ -210,5 +227,54 @@ public class XmlNetwork extends AsyncTask<String, Void, String> {
                 //Toast.makeText(context, R.string.lost_connection, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private List<PEMenuItem> loadMenuXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
+        InputStream stream = null;
+        XmlParser stackOverflowXmlParser = new XmlParser();
+        List<PEMenuItem> menuItems = null;
+        String title = null;
+        String url = null;
+        Calendar rightNow = Calendar.getInstance();
+        DateFormat formatter = new SimpleDateFormat("MMM dd h:mmaa");
+
+        // Checks whether the user set the preference to include summary text
+        //SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //boolean pref = sharedPrefs.getBoolean("summaryPref", false);
+
+        StringBuilder htmlString = new StringBuilder();
+        //htmlString.append("<h3>" + getResources().getString(R.string.page_title) + "</h3>");
+        //htmlString.append("<em>" + getResources().getString(R.string.updated) + " " +
+        //        formatter.format(rightNow.getTime()) + "</em>");
+
+        try {
+            stream = downloadUrl(urlString);
+            menuItems = stackOverflowXmlParser.parseMenu(stream);
+            // Makes sure that the InputStream is closed after the app is
+            // finished using it.
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
+
+        // StackOverflowXmlParser returns a List (called "entries") of Entry objects.
+        // Each Entry object represents a single post in the XML feed.
+        // This section processes the entries list to combine each entry with HTML markup.
+        // Each entry is displayed in the UI as a link that optionally includes
+        // a text summary.
+        for (PEMenuItem menuItem : menuItems) {
+            htmlString.append("<p><a href='");
+            htmlString.append(menuItem.link);
+            htmlString.append("'>" + menuItem.title + "</a></p>");
+            // If the user set the preference to include summary text,
+            // adds it to the display.
+            //if (pref) {
+            //    htmlString.append(entry.summary);
+            //}
+        }
+
+        //return htmlString.toString();
+        return menuItems;
     }
 }

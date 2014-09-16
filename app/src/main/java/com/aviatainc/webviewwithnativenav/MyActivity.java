@@ -77,7 +77,7 @@ public class MyActivity extends Activity
 
 
         try {
-            String URL = "http://wwwtest.onlineregister.com/~jrivera/android/xml/stack.xml";
+            String URL = "http://wwwtest.onlineregister.com/~jrivera/android/xml/menu.xml";
             //new DownloadXmlTask().execute(URL);
             new XmlNetwork().execute(URL);
             Toast.makeText(this, "xmlNetwork Worked!", Toast.LENGTH_LONG).show();
