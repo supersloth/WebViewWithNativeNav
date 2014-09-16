@@ -90,7 +90,7 @@ public class XmlNetwork extends AsyncTask<String, Void, String> {
             return "connection error";
         } catch (XmlPullParserException e) {
             //return getResources().getString(R.string.xml_error);
-            String temp = e.getMessage();
+            //String temp = e.getMessage();
             return "xml error";
         }
     }
