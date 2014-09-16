@@ -114,6 +114,7 @@ public class XmlNetwork extends AsyncTask< String, Void, List<PEMenuItem> > {
         //myWebView.loadData(result, "text/html", null);
         //String temp = result;
         List<PEMenuItem> temp = result;
+        List<PEMenuItem> temp2 = result;
 
     }
 
