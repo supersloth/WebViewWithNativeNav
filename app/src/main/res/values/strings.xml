@@ -56,13 +56,13 @@
 
     <array name="menu_item_dashboard">
 
-        <item>Dashboard</item>
-        <item>http://www.google.com</item>
+        <item>Dashboard3</item>
+        <item>http://www.deadspin.com</item>
     </array>
     <array name="menu_item_index">
 
-        <item>Title</item>
-        <item>http://www.yahoo.com</item>
+        <item>Title4</item>
+        <item>http://www.gawker.com</item>
     </array>
 
 </resources>

@@ -1,17 +1,3 @@
-/*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- */
-
 package com.aviatainc.webviewwithnativenav;
 
 import android.app.Activity;
@@ -47,23 +33,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-
-/**
- * Main Activity for the sample application.
- *
- * This activity does the following:
- *
- * o Presents a WebView screen to users. This WebView has a list of HTML links to the latest
- *   questions tagged 'android' on stackoverflow.com.
- *
- * o Parses the StackOverflow XML feed using XMLPullParser.
- *
- * o Uses AsyncTask to download and process the XML feed.
- *
- * o Monitors preferences and the device's network connection to determine whether
- *   to refresh the WebView content.
- */
-
 //AsyncTask<Params, Progress, Result>
 //meaning in this instance <String used by doInBackground(), Void since not currently using Progress function, List<PEMenuItem> being returned because objects!>
 public class XmlNetwork extends AsyncTask< String, Void, List<PEMenuItem> > {
@@ -83,7 +52,7 @@ public class XmlNetwork extends AsyncTask< String, Void, List<PEMenuItem> > {
     public static String sPref = null;
 
     // The BroadcastReceiver that tracks network connectivity changes.
-    private NetworkReceiver receiver = new NetworkReceiver();
+    //private NetworkReceiver receiver = new NetworkReceiver();
 
 
     @Override
@@ -115,6 +84,12 @@ public class XmlNetwork extends AsyncTask< String, Void, List<PEMenuItem> > {
         //String temp = result;
         List<PEMenuItem> temp = result;
         List<PEMenuItem> temp2 = result;
+
+        final MenuItemsAdapter menuItemsAdapter = new MenuItemsAdapter(
+                getActionBar().getThemedContext(),
+                android.R.layout.simple_list_item_activated_1);
+
+        //whatever.setNewValues(0;)
 
     }
 
@@ -186,49 +161,7 @@ public class XmlNetwork extends AsyncTask< String, Void, List<PEMenuItem> > {
         return stream;
     }
 
-    /**
-     *
-     * This BroadcastReceiver intercepts the android.net.ConnectivityManager.CONNECTIVITY_ACTION,
-     * which indicates a connection change. It checks whether the type is TYPE_WIFI.
-     * If it is, it checks whether Wi-Fi is connected and sets the wifiConnected flag in the
-     * main activity accordingly.
-     *
-     */
-    public class NetworkReceiver extends BroadcastReceiver {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ConnectivityManager connMgr =
-                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
-            // Checks the user prefs and the network connection. Based on the result, decides
-            // whether
-            // to refresh the display or keep the current display.
-            // If the userpref is Wi-Fi only, checks to see if the device has a Wi-Fi connection.
-            if (WIFI.equals(sPref) && networkInfo != null
-                    && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-                // If device has its Wi-Fi connection, sets refreshDisplay
-                // to true. This causes the display to be refreshed when the user
-                // returns to the app.
-                refreshDisplay = true;
-                //Toast.makeText(context, R.string.wifi_connected, Toast.LENGTH_SHORT).show();
-
-                // If the setting is ANY network and there is a network connection
-                // (which by process of elimination would be mobile), sets refreshDisplay to true.
-            } else if (ANY.equals(sPref) && networkInfo != null) {
-                refreshDisplay = true;
-
-                // Otherwise, the app can't download content--either because there is no network
-                // connection (mobile or Wi-Fi), or because the pref setting is WIFI, and there
-                // is no Wi-Fi connection.
-                // Sets refreshDisplay to false.
-            } else {
-                refreshDisplay = false;
-                //Toast.makeText(context, R.string.lost_connection, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     private List<PEMenuItem> loadMenuXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;

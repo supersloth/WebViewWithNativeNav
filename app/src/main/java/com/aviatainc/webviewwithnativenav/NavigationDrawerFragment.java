@@ -94,6 +94,11 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+
+        final MenuItemsAdapter menuItemsAdapter = new MenuItemsAdapter(
+                getActionBar().getThemedContext(),
+                android.R.layout.simple_list_item_activated_1);
+
         mDrawerListView = (ListView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -101,11 +106,13 @@ public class NavigationDrawerFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
                 Toast.makeText(getActivity(), "test"+position, Toast.LENGTH_LONG).show();
-                mCallbacks.openUrl(getLink(position));
+                mCallbacks.openUrl(menuItemsAdapter.getLink(getActionBar().getThemedContext(), position));
             }
         });
 
 
+        /*
+        //nested format
         ArrayList<String> menuNames = new ArrayList<String>();
         TypedArray menuResources = getResources().obtainTypedArray(R.array.menu_items);
 
@@ -118,24 +125,36 @@ public class NavigationDrawerFragment extends Fragment {
             itemDef = getResources().obtainTypedArray(resId);
             menuNames.add(itemDef.getString(0));
         }
+        */
 
-
+        //default test with strings.xml in really plain format
         //mDrawerListViewItems = getResources().getStringArray(R.array.drawermenuitems);
         //mDrawerListView.setAdapter(new ArrayAdapter<String>(
         //        getActionBar().getThemedContext(),
         //        android.R.layout.simple_list_item_activated_1,
         //        android.R.id.text1,
         //        mDrawerListViewItems));
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                menuNames));
+
+
+        //second test with strings.xml in nested format
+        //mDrawerListView.setAdapter(new ArrayAdapter<String>(
+        //        getActionBar().getThemedContext(),
+        //        android.R.layout.simple_list_item_activated_1,
+        //        android.R.id.text1,
+        //        menuNames));
+
+
+
+        mDrawerListView.setAdapter(menuItemsAdapter);
+
+
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
+
         return mDrawerListView;
     }
 
-
+    /*
     public String getLink(int number) {
         //return getResources().getStringArray(R.array.drawerlinkitems)[number];
 
@@ -154,6 +173,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         return menuLinks.get(number);
     }
+    */
 
     public boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
