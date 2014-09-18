@@ -85,9 +85,9 @@ public class XmlNetwork extends AsyncTask< String, Void, List<PEMenuItem> > {
         List<PEMenuItem> temp = result;
         List<PEMenuItem> temp2 = result;
 
-        final MenuItemsAdapter menuItemsAdapter = new MenuItemsAdapter(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1);
+        //final MenuItemsAdapter menuItemsAdapter = new MenuItemsAdapter(
+        //        getActionBar().getThemedContext(),
+        //        android.R.layout.simple_list_item_activated_1);
 
         //whatever.setNewValues(0;)
 
